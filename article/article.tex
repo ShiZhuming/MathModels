@@ -1,0 +1,35 @@
+\documentclass[12pt,AutoFakeBold]{article}%第二个参数解决宋体没有粗体的问题
+\usepackage{booktabs}%绘制三线表
+\usepackage{fontspec}%控制字体
+\usepackage[version=3]{mhchem}%化学反应式
+\usepackage{xeCJK}%控制中文字体
+\usepackage{latexsym}%绘制特殊数学符号
+\usepackage[a4paper]{geometry}%纸张大小和页边距
+\usepackage{pdfpages}%插入pdf页面
+\usepackage{titlesec}%控制标题格
+\usepackage{graphicx, epstopdf}%此处使.eps文件可转化成.pdf并应用自动编号功能
+\usepackage[journal=angew]{chemstyle}%此处设置图式的样式
+\usepackage{siunitx}%数学模式中使用SI单位
+\usepackage{color}%提供颜色支持
+\usepackage{listings,xcolor}
+
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}%页边距设置
+\setmainfont{Times New Roman}%英文字体
+\setCJKmainfont{SimSun}%中文字体
+\newfontfamily\arial{Arial}%Arial字体
+\XeTeXlinebreaklocale "zh"%中文自动换行
+\XeTeXlinebreakskip = 0pt plus 1pt%中文自动换行
+
+\begin{document}
+    % cover
+
+    % main body
+    
+    % appendix
+    由物料守恒可见
+    \[[\ce{H+}]+[\ce{NH4+}]=[\ce{C2H5O-}]\]
+    代入分布系数,全部化成$[\ce{H+}]$的函数，得到
+    \[[\ce{H+}]+\frac{[\ce{H+}]}{[\ce{H+}]+K_a(\ce{NH4+})}\times c_0(\ce{NH4+})=\frac{K(\ce{C2H5OH})}{[\ce{H+}]}\]
+    输入计算器计算即可，我身边没有计算器算不出具体的值，抱歉。
+        
+\end{document}
