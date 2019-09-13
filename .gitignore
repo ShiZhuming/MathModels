@@ -1,5 +1,6 @@
 *.xlsx
 *.doc
+*.doc*
 *.docx
 赛前准备.pdf
 *.aux
