@@ -86,19 +86,7 @@
     方程\ref{maineq}就是我们对本题建立的基本数学模型。接下来的部分中，我们将根据$Q_{in}(t)$和$Q_{out}(t)$的具体形式，对整个体系最佳$T$值的选择进行讨论。
     
     \subsection{问题1}
-    在问题1中$Q_{in}(t)$的形式比较简单，我们定义函数$A=A(t)$来描述供油处入口的截面积，它的形式为
-    \begin{equation}
-        A(t)=
-        \begin{cases}
-            \left(\frac{1.4}{2}\right)^2\pi \si{\square\mm} & k(T+10)\leq t\leq k(T+10)+T,k\in\mathbb{N}\\
-            0 & k(T+10)+T\leq t\leq (k+1)(T+10),k\in\mathbb{N}
-        \end{cases}
-    \end{equation}
-    代入题目中给出的流量公式可得
-    \begin{equation}
-        Q_{in}(t)=CA(t)\sqrt{\frac{2(p_{high}-p)}{\rho}}
-    \end{equation}\par
-    在问题1中$Q_{out}(t)$的形式也比较简单，它是由题目中图\ref{inputof1}给出的
+    在问题1中$Q_{out}(t)$的形式比较简单，它是由题目中图\ref{inputof1}给出的
     \begin{figure}[H]
         \centering
         \includegraphics[scale=0.75]{figure/inputof1.png}
@@ -109,14 +97,26 @@
     \begin{equation}
         Q_{out}(t)=
         \begin{cases}
-            100t&100k\leq t\leq 100k+0.2,k\in\mathbb{N}\\
+            100(t-100k)&100k\leq t\leq 100k+0.2,k\in\mathbb{N}\\
             20&100k+0.2\leq t\leq 100k+2.2,k\in\mathbb{N}\\
-            -100t+240&100k+2.2\leq t\leq 100k+2.4,k\in\mathbb{N}\\
+            -100(t-100k)+240&100k+2.2\leq t\leq 100k+2.4,k\in\mathbb{N}\\
         \end{cases}
+    \end{equation}\par
+    在问题1中$Q_{in}(t)$的形式也比较简单，我们定义$0-1$变量$\lambda=\lambda(t)$来描述供油处入口的截面积，它的形式为
+    \begin{equation}
+        \lambda(t)=
+        \begin{cases}
+            1 & k(T+10)\leq t\leq k(T+10)+T,k\in\mathbb{N}\\
+            0 & k(T+10)+T\leq t\leq (k+1)(T+10),k\in\mathbb{N}
+        \end{cases}
+    \end{equation}
+    代入题目中给出的流量公式可得
+    \begin{equation}
+        Q_{in}(t)=\lambda CA\sqrt{\frac{2(p_h-p)}{\rho_h}}
     \end{equation}\par
     将$Q_{in}(t)$和$Q_{out}(t)$的具体形式代入方程\ref{maineq}，发现所得方程是一阶常微分方程，所以尝试用差分法通过计算机进行数值解微分方程，取$\Delta t=\SI{0.01}{ms}$，用Wolfram Mathematica计算并绘制出对应于不同$T$取值$p-t$变化图\ref{ptfigure1}
     \begin{equation}
-        \frac{p_{i+1}-p_i}{E(p_i)\Delta t}=\frac{1}{V_0}\left(CA(ti)\sqrt{\frac{2\left(p_h-p_i\right)}{\rho_h}}-Q_{out}(t_i)\right)
+        \frac{p_{i+1}-p_i}{E(p_i)\Delta t}=\frac{1}{V_0}\left(\lambda CA\sqrt{\frac{2\left(p_h-p_i\right)}{\rho_h}}-Q_{out}(t_i)\right)
     \end{equation}
     \begin{figure}[H]
         \centering
@@ -124,7 +124,46 @@
         \caption{差分方程数值模拟结果}
         \label{ptfigure1}
     \end{figure}
-    利用二分法C++程序可以解出精确到百分位的$T$值$T=$
+    利用二分法计算程序可以得到精确到千分位的单向阀开启时长$T=\SI{0.290}{\ms}$。\par
+    对于将油管内的压力从\SI{100}{\MPa}提高到\SI{150}{\MPa}的情况，我们可以用同样的差分方程，分别模拟起始压力与\SI{2}{\s}、\SI{5}{\s}和\SI{10}{\s}后的压力差别为\SI{50}{\MPa}时的情况，同样通过二分法可以找出最佳的精确到千分位的单向阀开启时长$T_{2s}=\SI{0.886}{\ms}$、$T_{5s}=\SI{0.713}{\ms}$和$T_{10s}=\SI{0.703}{\ms}$。\par
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=1]{figure/data3.png}
+        \caption{调整过程中的压力周期变化}
+        \label{adjustpress}
+    \end{figure}
+    而进过该段时间后，维持\SI{150}{\MPa}所需要的单向阀开启时长为$T_{150}=\SI{0.701}{\ms}$。图\ref{adjustpress}展示了其中一个调整过程中的压力对时间的变化图像。\par
+    \paragraph{问题1结论}
+    综上所述，将高压油管内的压力尽可能稳定在\SI{100}{\MPa}左右，应该设置单向阀每次开启\SI{0.290}{\ms}。如果要将高压油管内的压力从\SI{100}{\MPa}增加到\SI{150}{\MPa},且分别经过约\SI{2}{\s}、\SI{5}{\s}和\SI{10}{\s}的调整之后稳定在\SI{150}{\MPa}时的情况，对应时长内单向阀应分别先调整为开启$T_{2s}=\SI{0.886}{\ms}$、$T_{5s}=\SI{0.713}{\ms}$和$T_{10s}=\SI{0.703}{\ms}$，随后维持开启时长为$T_{150}=\SI{0.701}{\ms}$，以维持\SI{150}{\MPa}。\par
+    
+    \section{问题2}
+    问题2中$Q_{out}(t)$的形式比较复杂。\par
+    首先我们定义等效面积函$B(t)$，用来描述针阀运动过程中喷油嘴喷孔的等效面积。由简单的几何计算可知，它的形式如下。
+    \begin{equation}
+        B(t)=\pi\left(\left(\frac{d_B}{2}+h(t)\tan9^\circ\right)^2-\left(\frac{d_B}{2}\right)^2\right)
+    \end{equation}
+    其中的$h(t)$为针阀升程，由题目附件2给出的数据拟合得到，其图形和拟合结果如下
+    \begin{equation}
+        h(t)=
+        \begin{cases}
+            \frac{0.5342(t-100k)^2-0.04835(t-100k)+0.000726}{(t-100k)^2-0.7362(t-100k)+0.1716}&100k\leq t\leq 100k+0.45,k\in\mathbb{N}\\
+            2&100k+0.45\leq t\leq 100k+2,k\in\mathbb{N}\\
+            \frac{0.5358(t-100k)^2-2.576(t-100k)+3.096}{(t-100k)^2-4.163(t-100k)+4.368}&100k+2\leq t\leq 100k+2.45,k\in\mathbb{N}\\
+            0&100k+2.45\leq t\leq 100(k+1),k\in\mathbb{N}\\      
+        \end{cases}
+    \end{equation}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.8]{figure/data21.png}
+        \includegraphics[scale=0.8]{figure/data22.png}
+        \caption{针阀升程}
+        \label{zhenfa}
+    \end{figure}
+    由于高压油管内的油压远高于大气压，所以我们可以忽略喷油嘴外的压强，即$\Delta p\approx p$，由此$Q_{out}(t)$就可以被写成
+    \begin{equation}
+        Q_{out}(t)=CB\sqrt{\frac{2p}{\rho}}
+    \end{equation}
+
     % appendix
         
 \end{document}
