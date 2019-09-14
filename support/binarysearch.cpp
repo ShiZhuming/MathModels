@@ -7,6 +7,8 @@
 #define C 0.85
 #define Phigh 160
 #define Precision 0.001
+#define DIF 50
+// #define INF 
 double T = 0.3;
 double A(double t)
 {
@@ -41,14 +43,15 @@ double p()
     while (t < TimeLimit)
     {
         // printf("press=%f\t",press);
-        press = press + ((C*A(t)*sqrt(2*(Phigh-press)/0.87113)-Qout(t))/V);
+        if(press > Phigh)press = Phigh;
+        press = press + ((C*A(t)*sqrt(2*(Phigh-press)/0.87113)-Qout(t))/V)*GAP*(0.0001*press*press*press-0.001082*press*press+5.474*press+1532);
         t += GAP;
     }
     return (press - INIT);
 }
 void binarysearch(double start, double end)
 {
-    printf("%f,%f\t",start,end);
+    printf("search[%f,%f]\t",start,end);
     if (end - start < Precision)
     {
         printf("found the solution : %f",end);
@@ -56,8 +59,8 @@ void binarysearch(double start, double end)
     }
     T = start + (end - start)/2;
     double mid = p();
-    printf("mid=%f\t",mid);
-    if(mid-50 > 0){
+    printf("mid p=%f\n",mid);
+    if(mid - DIF > 0){
         binarysearch(start, start + (end - start)/2);
     }
     else
@@ -68,6 +71,6 @@ void binarysearch(double start, double end)
 int main()
 {
     // printf("%f",Qout(63));
-    binarysearch(0.3,0.55);
+    binarysearch(0.1,1);
     return 0;
 }
