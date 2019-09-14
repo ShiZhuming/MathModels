@@ -50,6 +50,7 @@
             &p_0=\SI{100}{\MPa},\rho_0=\SI{0.850}{\mg\per\cubic\mm}\\
             &E=E(p)
         \end{cases}
+        \label{pandrho}
     \end{equation}
     描述，其中$E(p)$由附件3的数据给出，对附件3的数据用MATLAB作图并拟合得到方程，如图\ref{data3}
     \begin{equation}
@@ -138,6 +139,7 @@
     
     \section{问题2}
     问题2中$Q_{out}(t)$的形式比较复杂。\par
+    % bug!!!
     首先我们定义等效面积函$B(t)$，用来描述针阀运动过程中喷油嘴喷孔的等效面积。由简单的几何计算可知，它的形式如下。
     \begin{equation}
         B(t)=\pi\left(\left(\frac{d_B}{2}+h(t)\tan9^\circ\right)^2-\left(\frac{d_B}{2}\right)^2\right)
@@ -162,8 +164,25 @@
     由于高压油管内的油压远高于大气压，所以我们可以忽略喷油嘴外的压强，即$\Delta p\approx p$，由此$Q_{out}(t)$就可以被写成
     \begin{equation}
         Q_{out}(t)=CB\sqrt{\frac{2p}{\rho}}
+    \end{equation}\par
+    再来看$Q_{in}$的表达形式，它比较复杂，所以我们不解出其具体形式，而将其用一个隐函数描述。考虑油泵油缸的质量守恒，可以得到下面的方程（以下下标为$h$的项均为油泵油缸的性质）。
+    \begin{equation}
+        \frac{\dif m_h}{\dif t}=-Q_{in}\rho
+        \label{highmaineq}
     \end{equation}
-
+    又由密度的定义$m_h=\rho_hV_h$微分得到
+    \begin{equation}
+        \dif m_h=\rho_h\dif V_h+V_h\dif\rho_h
+        \label{higheq2}
+    \end{equation}
+    将方程\ref{pandrho}、\ref{highmaineq}、\ref{higheq2}联立可以，整理得到
+    \begin{equation}
+        \frac{\dif p_h}{E(p_h)\dif t}=\frac{-Q_{in}\frac{\rho}{\rho_h}-\frac{\dif V_h}{\dif t}}{V_h}
+        \label{highmaineq2}
+    \end{equation}\par
+    在高压油泵供油的过程中我们可以用方程\ref{highmaineq2}去描述它的情况。\par
+    这个方程的形式和刚才对高压油管的建模模型——方程\ref{maineq}形式很相似，也就是我们可以把高压油泵的油缸视作另一个高压油管，活塞对它的压缩可以视作$Q_{in}$，而向高压油管供油可以视作$Q_{out}$，当然此时$V$是变量，所以不可以直接代入。
+    
     % appendix
         
 \end{document}
