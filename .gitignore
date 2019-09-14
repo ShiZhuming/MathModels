@@ -9,3 +9,4 @@
 *.synctex
 *.fdb_latexmk
 *.fls
+*.out
