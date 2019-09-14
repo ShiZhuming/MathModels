@@ -1,0 +1,33 @@
+T = 0.29
+ph = 160
+rou0 = 0.85
+Em[p_] := 0.0001*p^3 - 0.001082*p^2 + 5.474*p + 1532 /; 0 <= p < 3000
+rouh = N[rou0*E^Integrate[1/Em[x], {x, 100, 160}]]
+c = 0.85
+v0 = N[Pi*500*25]
+s = N[Pi*0.47]
+A[t_] := s /; 0 <= Mod[t, T + 10] < T
+A[t_] := 0 /; T <= Mod[t, T + 10] < T + 10
+Qo[t_] := N[100*Mod[t, 100]] /; 0 <= Mod[t, 100] < 0.2
+Qo[t_] := 20 /; 0.2 <= Mod[t, 100] < 2.2
+Qo[t_] := N[-100 (t - 2.4)] /; 2.2 <= Mod[t, 100] < 2.4
+Qo[t_] := 0 /; 2.4 <= Mod[t, 100] < 100
+size = 3
+delt = {0.01, 0.03, 0.005}
+len = 102
+t = {0, 0, 0, 0, 0}
+p = {0, 0, 0, 0, 0}
+td = {0, 0, 0, 0, 0}
+For[j = 1, j <= size, j++, length = IntegerPart[len/delt[[j]]]; 
+ total = (length + 1)*delt[[j]]; 
+ t[[j]] = Table[x, {x, 0, total, delt[[j]]}]; 
+ p[[j]] = Table[x, {x, 0, total, delt[[j]]}];
+ For[i = 2; p[[j]][[1]] = 100, i <= length, i++, 
+  p[[j]][[i]] = 
+   N[p[[j]][[i - 1]] + 
+     delt[[j]]*
+      Em[p[[j]][[i - 1]]]*(c*A[t[[j]][[i - 1]]]*
+          Sqrt[2*(ph - p[[j]][[i - 1]])/rouh] - Qo[t[[j]][[i - 1]]])/
+       v0]];
+ td[[j]] = Table[{t[[j]][[i]], p[[j]][[i]]}, {i, 1, length, 1}]]
+ListPlot[td]
