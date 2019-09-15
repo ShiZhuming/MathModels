@@ -13,6 +13,7 @@
 \usepackage{color}%提供颜色支持
 \usepackage{listings,xcolor}
 \usepackage{amsfonts}
+\usepackage{indentfirst}
 
 \geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}%页边距设置
 \setmainfont{Times New Roman}%英文字体
@@ -21,16 +22,44 @@
 \XeTeXlinebreaklocale "zh"%中文自动换行
 \XeTeXlinebreakskip = 0pt plus 1pt%中文自动换行
 
+\lstset{
+numbers=left,
+framexleftmargin=10mm,
+frame=none,
+backgroundcolor=\color[RGB]{245,245,244},
+keywordstyle=\bf\color{blue},
+identifierstyle=\bf,
+numberstyle=\color[RGB]{0,192,192},
+commentstyle=\it\color[RGB]{0,96,96},
+stringstyle=\rmfamily\slshape\color[RGB]{128,0,0},
+showstringspaces=false
+}
+
 \newcommand{\dif}{\mathrm{d}}
 
 \begin{document}
     % cover
-
+    \vspace*{4cm}
+    \begin{center}
+        \Huge{\textbf{高压油管压力控制的数学模型}}
+    \end{center}
+    \vspace*{5cm}
+    \rule{\textwidth}{1mm}
+    \large{    
+    \textbf{摘要}\quad 对高压油管中的燃油注入和喷出的数学模型的建立，是研究和改善燃油发动机工作状况的必要前提。在本问题中，我们考察了一个由高压油泵、高压油管、喷油嘴和减压阀等部件组成的简单高压油路系统。我们将复杂的高压油路系统建立成一个形式简单而统一的数学形式
+    \[\frac{\dif p}{E\dif t}=\frac{Q_{in}-Q_{out}}{V}\]
+    并从这个简洁优美的式子，推导出关于这个高压油路的控制理论依据。\\
+    \textbf{关键词}\quad 高压油管\quad 压力控制\quad 数学模型\\
+    }
+    \rule{\textwidth}{1mm}
+    \newpage
     % main body
-    \section{问题分析}
+    \section{问题重述与分析}
+    对高压油管中的燃油注入和喷出的数学模型的建立，是研究和改善燃油发动机工作状况的必要前提。在本问题中，我们考察了一个由高压油泵、高压油管、喷油嘴和减压阀等部件组成的简单高压油路系统。\par
+    我们首先考虑了这个高压油路系统最简单的情况，即油泵可以稳定注入恒压的高压油，喷嘴以简单函数方式喷出油料；随后，我们把高压油泵的实际工作情况考虑进来，同时考虑了喷油嘴工作的本质，模型变得复杂起来；最后，我们考虑了实践中常见的多喷嘴油路的工作情况，并引入减压阀来控制高压油管内部的压力变化。问题不断复杂化，并不断接近高压油路的真实工作状态，实用性不断提高。\par
 
     \section{模型设计与计算}
-    \subsection{模型的基本假设}
+    \subsection{基本模型设计}
     我们的目标是解出高压油管内部压力$p$与时间$t$的关系,记作
     \begin{equation}
         p=p(t)
@@ -115,27 +144,50 @@
     \begin{equation}
         Q_{in}(t)=\lambda CA\sqrt{\frac{2(p_h-p)}{\rho_h}}
     \end{equation}\par
-    将$Q_{in}(t)$和$Q_{out}(t)$的具体形式代入方程\ref{maineq}，发现所得方程是一阶常微分方程，所以尝试用差分法通过计算机进行数值解微分方程，取$\Delta t=\SI{0.01}{ms}$，用Wolfram Mathematica计算并绘制出对应于不同$T$取值$p-t$变化图\ref{ptfigure1}
+    将$Q_{in}(t)$和$Q_{out}(t)$的具体形式代入方程\ref{maineq}，发现所得方程是一阶常微分方程，所以尝试用差分法通过计算机进行数值解微分方程，取$\Delta t=\SI{0.01}{ms}$，用C++程序进行计算并用Python绘制出对应于不同$T$取值$p-t$变化图，以及差分过程中选用不同$\Delta t$对结果的影响，发现两条曲线非常接近，可以认为结果收敛可靠，如图\ref{ptfigure1}
     \begin{equation}
         \frac{p_{i+1}-p_i}{E(p_i)\Delta t}=\frac{1}{V_0}\left(\lambda CA\sqrt{\frac{2\left(p_h-p_i\right)}{\rho_h}}-Q_{out}(t_i)\right)
     \end{equation}
     \begin{figure}[H]
         \centering
-        \includegraphics[scale=0.8]{figure/data3.png}%notnow!
+        \includegraphics[scale=0.32]{figure/11-0.png}
+        \includegraphics[scale=0.32]{figure/11-exgap-1}
         \caption{差分方程数值模拟结果}
         \label{ptfigure1}
     \end{figure}
-    利用二分法计算程序可以得到精确到千分位的单向阀开启时长$T=\SI{0.290}{\ms}$。\par
-    对于将油管内的压力从\SI{100}{\MPa}提高到\SI{150}{\MPa}的情况，我们可以用同样的差分方程，分别模拟起始压力与\SI{2}{\s}、\SI{5}{\s}和\SI{10}{\s}后的压力差别为\SI{50}{\MPa}时的情况，同样通过二分法可以找出最佳的精确到千分位的单向阀开启时长$T_{2s}=\SI{0.886}{\ms}$、$T_{5s}=\SI{0.713}{\ms}$和$T_{10s}=\SI{0.703}{\ms}$。\par
+    我们使用二分法对一定范围内的$T$进行搜索，用经过一定时间段后高压油管内油压力的变化$\Delta p$来评价“压力稳定在\SI{100}{\MPa}”的好坏，搜索出使压力变化最小时的单向阀开启时长$T=\SI{0.29}{\ms}$。\par
+    同时，在数值模拟的过程中我们发现，只要$T$处于一定的范围内，在经过较长时间后，高压油管内的压力$p$都可以稳定地收敛到一个区间内，如图\ref{11top2}，它描述了取不同的$T$值之后\SI{200000}{\ms}内高压油管内压力的变化趋势和范围。利用数值模拟可以求出这个区间大致为$[0.292,0.298]\si{\ms}$。\par
     \begin{figure}[H]
         \centering
-        \includegraphics[scale=0.8]{figure/data3.png}
+        \includegraphics[scale=0.32]{figure/11-t-2.png}
+        % \includegraphics[scale=0.32]{figure/11-t-1.png}
+        \caption{\SI{200000}{\ms}内不同喷油间隔值下高压油管压力与时间的关系}
+        \label{11top2}
+    \end{figure}
+    同时，在前面的计算中我们只考虑了$t=0$时刻同时开始喷油和开始供油的情况，实际问题中，供油周期和喷油周期可能存在着相位差，但是通过数值模拟发现相位差造成的影响很小，在较长时间段内可以忽略，如图\ref{11exxwc}。\par
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.32]{figure/11-exxwc.png}
+        \caption{相位差对$p-t$关系的影响}
+        \label{11exxwc}
+    \end{figure}
+    对于将油管内的压力从\SI{100}{\MPa}提高到\SI{150}{\MPa}的情况，我们可以用同样的差分方程，分别模拟起始压力与\SI{2}{\s}、\SI{5}{\s}和\SI{10}{\s}后的压力差别为\SI{50}{\MPa}时的情况，同样通过二分法可以找出最佳的精确到千分位的单向阀开启时长$T_{2s}=\SI{0.89}{\ms}$、$T_{5s}=\SI{0.71}{\ms}$和$T_{10s}=\SI{0.70}{\ms}$。\par
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.32]{figure/13-1-t.png}
         \caption{调整过程中的压力周期变化}
         \label{adjustpress}
     \end{figure}
-    而进过该段时间后，维持\SI{150}{\MPa}所需要的单向阀开启时长为$T_{150}=\SI{0.701}{\ms}$。图\ref{adjustpress}展示了其中一个调整过程中的压力对时间的变化图像。\par
+    图\ref{12exxwc}描述了相位差对调整过程的影响，在调节完成后依旧可以收敛。\par
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale = 0.32]{figure/12-1-exxwc.png}
+        \caption{相位差对调节过程的影响}
+        \label{12exxwc}
+    \end{figure}
+    而进过该段时间后，维持\SI{150}{\MPa}所需要的单向阀开启时长为$T_{150}=\SI{0.70}{\ms}$。图\ref{adjustpress}展示了其中一个调整过程中的压力对时间的变化图像。\par
     \paragraph{问题1结论}
-    综上所述，将高压油管内的压力尽可能稳定在\SI{100}{\MPa}左右，应该设置单向阀每次开启\SI{0.290}{\ms}。如果要将高压油管内的压力从\SI{100}{\MPa}增加到\SI{150}{\MPa},且分别经过约\SI{2}{\s}、\SI{5}{\s}和\SI{10}{\s}的调整之后稳定在\SI{150}{\MPa}时的情况，对应时长内单向阀应分别先调整为开启$T_{2s}=\SI{0.886}{\ms}$、$T_{5s}=\SI{0.713}{\ms}$和$T_{10s}=\SI{0.703}{\ms}$，随后维持开启时长为$T_{150}=\SI{0.701}{\ms}$，以维持\SI{150}{\MPa}。\par
+    综上所述，将高压油管内的压力尽可能稳定在\SI{100}{\MPa}左右，应该设置单向阀每次开启\SI{0.29}{\ms}。如果要将高压油管内的压力从\SI{100}{\MPa}增加到\SI{150}{\MPa},且分别经过约\SI{2}{\s}、\SI{5}{\s}和\SI{10}{\s}的调整之后稳定在\SI{150}{\MPa}时的情况，对应时长内单向阀应分别先调整为开启$T_{2s}=\SI{0.89}{\ms}$、$T_{5s}=\SI{0.71}{\ms}$和$T_{10s}=\SI{0.70}{\ms}$，随后维持开启时长为$T_{150}=\SI{0.70}{\ms}$，以维持\SI{150}{\MPa}。\par
     
     \section{问题2}
     问题2中$Q_{out}(t)$的形式比较复杂。\par
@@ -144,6 +196,13 @@
         B(t)=\pi\left(\left(\frac{d_B}{2}+h(t)\tan9^\circ\right)^2-\left(\frac{d_B}{2}\right)^2\right)
     \end{equation}\par
     但是，当针阀上升到一定高度时，等效面积函数值会超过喷嘴的面积，此时喷油能力转而由喷嘴的面积限制，为了不改变$B(t)$的表达形式，我们定义了等效升程函数$h(t)$，它表示针阀的等效升程，由题目附件2给出的数据拟合，并按照前述进行修正得到，其图形和拟合结果如下
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.8]{figure/data21.png}
+        \includegraphics[scale=0.8]{figure/data22.png}
+        \caption{针阀升程}
+        \label{zhenfa}
+    \end{figure}
     \begin{equation}
         h(t)=
         \begin{cases}
@@ -153,13 +212,6 @@
             0&100k+2.45\leq t\leq 100(k+1),k\in\mathbb{N}\\      
         \end{cases}
     \end{equation}
-    \begin{figure}[H]
-        \centering
-        \includegraphics[scale=0.8]{figure/data21.png}
-        \includegraphics[scale=0.8]{figure/data22.png}
-        \caption{针阀升程}
-        \label{zhenfa}
-    \end{figure}
     由于高压油管内的油压远高于大气压，所以我们可以忽略喷油嘴外的压强，即$\Delta p\approx p$，由此$Q_{out}(t)$就可以被写成
     \begin{equation}
         Q_{out}(t)=CB\sqrt{\frac{2p}{\rho}}
@@ -209,7 +261,7 @@
     \begin{equation}
         \frac{\dif p}{E\dif t}=\frac{Q_{in}-Q_{out}}{V}
         \label{maineq2}
-    \end{equation}
+    \end{equation}\par
     联立方程\ref{maineq2}、\ref{highmaineq2}并使用和问题1中相似的差分方程计算
     \begin{equation}
         \begin{aligned}
@@ -217,8 +269,303 @@
             &\frac{p_{i+1}-p_i}{E(p_i)\Delta t}=\frac{1}{V_0}\left(\delta CA\sqrt{\frac{2\left(p_h-p_i\right)}{\rho_h}}-Q_{out}(t_i)\right)\\
             &p_h(\frac{2k\pi}{\omega})=0.5,k\in\mathbb{N}
         \end{aligned}
+    \end{equation}\par
+    我们使用二分法对一定范围内的$\omega$进行搜索，用经过一定时间段后高压油管内油压力的变化$\Delta p$来评价“压力稳定在\SI{100}{\MPa}”的好坏，搜索出使压力变化最小时的$\omega=\SI{0.0152}{\radian\per\ms}$。对应的$p-t$变化曲线如图\ref{ptfigure2}。\par
+    \begin{figure}[h]
+        \centering
+        \includegraphics[scale = 0.32]{figure/2-1.png}
+        \caption{问题2中高压油管内压力和时间的变化图}
+        \label{ptfigure2}
+    \end{figure}
+    下面的曲线则描述了二分搜索中不同$\omega$的选取造成的$p-t$变化曲线。
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.32]{figure/3-2.png}
+        \caption{二分搜索中不同$\omega$的选取造成的$p-t$变化}
+        % \label{}
+    \end{figure}
+    \paragraph{问题2结论}
+    通过数值模拟和二分搜索，我们给出凸轮的角速度$\omega=\SI{0.028}{\radian\per\ms}$时，高压油管内的压力尽量稳定在\SI{100}{\MPa}左右。
+    \section{问题3}
+    从问题2给出的图\ref{ptfigure2}可以看到，造成压力波动的主要因素是喷油和注油过程。相比两个喷油嘴同时喷油，交替喷油可以减少高压油管中的压力波动。我们可以通过数值模拟验证这一点。\par
+    增加一个喷油嘴只改变了问题2中$Q_{out}(t)$的具体形式，对于交替喷油模型，$Q_{out}(t)$的具体形式如下。\par
+    \begin{equation}
+        Q_{out}(t)=CB\sqrt{\frac{2p}{\rho}}
     \end{equation}
+    \begin{equation}
+        B(t)=\pi\left(\left(\frac{d_B}{2}+h(t)\tan9^\circ\right)^2-\left(\frac{d_B}{2}\right)^2\right)
+    \end{equation}
+    \begin{equation}
+        h(t)=
+        \begin{cases}
+            \frac{0.5342(t-50k)^2-0.04835(t-50k)+0.000726}{(t-50k)^2-0.7362(t-50k)+0.1716}&50k\leq t\leq 50k+0.3309,k\in\mathbb{N}\\
+            1.1532&50k\leq t+0.3309\leq 50k+2.1213,k\in\mathbb{N}\\
+            \frac{0.5358(t-50k)^2-2.576(t-50k)+3.096}{(t-50k)^2-4.163(t-50k)+4.368}&50k+2.1213\leq t\leq 50k+2.45,k\in\mathbb{N}\\
+            0&50k+2.45\leq t\leq 50(k+1),k\in\mathbb{N}\\      
+        \end{cases}
+    \end{equation}
+    将这个结果代回方程\ref{maineq2}就可以进行与问题1相同的数值模拟，解出此时最合适的凸轮角速度为$\omega=\SI{0.053}{\radian\per\ms}$。图\ref{ptfigure31}中的红色线描述了此时的$p-t$变化情况，其他色线描述了二分逼近的结果。\par
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.32]{figure/3-3.png}
+        \caption{增加一个喷油嘴之后的高压油管内压力与时间变化}
+        \label{ptfigure31}
+    \end{figure}
+    减压阀可以控制体系内部压力不高于某一定值，该定值即为减压阀的开放阈值，记作$p_0$，通过设定$p_0$即可控制减压阀。
+
+
+    \section{总结}
+    在本题中，我们从简单到复杂考虑了高压油路系统的三种模型，并把他们统一到
+    \[\frac{\dif p}{E\dif t}=\frac{Q_{in}-Q_{out}}{V}\]
+    这一简洁的形式，利用具体条件下不同
 
     % appendix
+    \newpage
+    \pagestyle{empty}
+    \section{附录}
+    我们使用的软件与工具包括MATLAB、Python、C++、\LaTeX、git、github和cnki.net。
+    \subsection{MATLAB代码}
+    我们使用MATLAB进行拟合运算，没有输入交互代码，只用鼠标操作。
+    \subsection{Python代码}
+    我们使用Python绘制本文中几乎大多数插图，使用的程序代码如下
+    \begin{lstlisting}[language={python}]
+    import matplotlib.pyplot as plt
+    f=open('data.out')
+    r=f.read()
+    r=r.split('\n\n')
+    r.pop()
+    x=[];y=[]
+    for i in range(len(r)):
+        x.append([]);y.append([])
+        r[i]=r[i].split('\n')
+        for j in range(len(r[i])-1):
+            r[i][j]=r[i][j].split(' ')
+            x[i].append(float(r[i][j][0]))
+            y[i].append(float(r[i][j][1]))
+        plt.plot(x[i],y[i],label=str(r[i][len(r[i])-1]))
+        print(str(r[i][len(r[i])-1]))
+    plt.xlabel('t');plt.ylabel('p',rotation=0)
+    plt.legend()
+    plt.grid()
+    plt.show()
+    \end{lstlisting}
+    \subsection{C++代码}
+    本题中所有的二分法优化都是通过不断改动以下程序的参数实现的
+    \begin{lstlisting}[language={c++}]
+    #include<cstdio>
+    #include<cmath>
+    #define TimeLimit 1000
+    #define GAP 0.01
+    #define INIT 100
+    #define V (3.1416*500*25)
+    #define C 0.85
+    #define Phigh 160
+    #define Precision 0.001
+    #define DIF 0
+    #define phinit 0.5
+    double omege = 20;
+    // #define INF 
+    /*//this part for question 1
+    double T = 0.3;
+    double A(double t)
+    {
+        double temp = t-(double)((int)(t/(T+10)))*(T+10);
+        if(temp <= T){
+            return (0.49*3.1416);
+        }
+        else return 0;
+    }
+    double Qout(double t)
+    {
+        double temp = t-(double)((int)(t/(100)))*(100);
+        // printf("%f",temp);
+        if(temp <= 0.2)
+        {
+            return 100*temp;
+        }
+        else if(temp >0.2 && temp < 2.2)
+        {
+            return 20;
+        }
+        else if(temp >= 2.2 && temp <= 2.4)
+        {
+            return temp*(-100)+240;
+        }
+        else return 0;
+    }
+    double p()
+    {
+        double t = 0;
+        double press = INIT;
+        // printf("%f\n%f\n",t,press);
+        while (t < TimeLimit)
+        {
+            // printf("press=%f\t",press);
+            if(press > Phigh)press = Phigh;
+            press = press + ((C*A(t)*sqrt(2*(Phigh-
+            press)/0.87113)-Qout(t))/V)*GAP
+            *(0.0001*press*press*press-0.001082
+            *press*press+5.474*press+1532);
+            t += GAP;
+            // printf("%f\n%f\n",t,press);
+        }
+        return (press - INIT);
+    }
+    */
+    double rho(double p){
+        double sum=0;
+        if(p>100){
+            for(double i=100;i<=p;i+=0.001){
+                sum+=0.001/(0.0001*i*i*i-0.001082*i
+                *i+5.474*i+1532);
+            }
+            return 0.85*pow(2.718281828459,sum);
+        }
+        else if(p<100){
+            for(double i=100;i>=p;i-=0.001){
+                sum-=0.001/(0.0001*i*i*i-0.001082*i
+                *i+5.474*i+1532);
+            }
+            return 0.85*pow(2.718281828459,sum);
+        }
+        return 0.85;
+    }
+    inline double E(double p)
+    {
+        return (0.0001*p*p*p-0.001082*p*p+5.474*p
+        +1532);
+    }
+    inline int delta(double ph, double p)
+    {
+        return (ph >= p);
+    }
+    inline double Theta(double t)
+    {
+        return (omege*t+3.14-6.28*(int)((omege*t
+        +3.14)/6.28));
+    }
+    inline double R(double theta)
+    {
+        return (4.826+2.413*sin(theta+1.5708));
+    }
+    double Vh(double t)
+    {
+        return (20+(7.239-R(Theta(t)))*3.1416*2.5
+        *2.5);
+    }
+    double h(double t)
+    {
+        double temp = t - ((int)(t/50))*50;
+        if(temp < 0.3309)
+        {
+            return (0.5342*temp*temp-0.04835*temp+
+            0.000726)/(temp*temp-0.7362*temp+0.1716);
+        }
+        else if(temp >= 0.3309 && temp <= 2.1213)
+        {
+            return 1.1532;
+        }
+        else if(temp > 2.1213 && temp < 2.45)
+        {
+            return (0.5358*temp*temp-2.576*temp+
+            3.096)/(temp*temp-4.163*temp+4.368);
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    double B(double t)
+    {
+        return 3.1416*((1.25+h(t)*0.1584)*(1.25
+        +h(t)*0.1584)-1.25*1.25);
+    }
+    double Qout(double t, double p)
+    {
+        return (0.85*B(t)*sqrt(2*p/rho(p)));
+    }
+    double p()//for question 2
+    {
+        double t = 0;
+        double press = INIT;
+        double pressh = phinit;
+        // printf("%f\n%f\n",t,press);
+        while (t < TimeLimit)
+        {
+            // printf("press=%f\t",press);
+            t += GAP;
+            if(omege*t/6.2832-(int)(omege*t
+            /6.2832) < 0.001 && omege*t/6.2832
+            -(int)(omege*t/6.2832) > -0.001)
+            {
+                pressh = phinit;
+            }
+            // printf("Qout = %f\t",
+            Qout(t,press));//喷油
+            if(delta(pressh,press))
+            {
+                // printf("inittime = %f\tpressh
+                = %f\tpress = %f\n",t,pressh,press);
+                pressh = pressh + (GAP*E(pressh)
+                /Vh(t))*(-0.85*3.1416*0.49*sqrt(2
+                *(pressh - press)/rho(pressh))
+                *(rho(press)/rho(pressh)) - (Vh(t)
+                 - Vh(t - GAP))/GAP);
+                if(delta(pressh,press))
+                {
+                    press = press + (GAP*E(press)/V)
+                    *(0.85*3.1416*0.49*sqrt(2*(pressh
+                     - press)/rho(pressh)) - Qout(t
+                     ,press));        
+                }
+                else
+                {
+                    press = press + (GAP*E(press)/V)
+                    *( - Qout(t,press));
+                }    
+            }
+            else
+            {
+                pressh = pressh + (GAP*E(pressh)
+                /Vh(t))*( - (Vh(t) - Vh(t - GAP))/GAP);
+                press = press + (GAP*E(press)/V)
+                *( - Qout(t,press));
+            }
+            // printf("time = %f\tpressh = %f\tpress
+             = %f\n",t,pressh,press);
+        }
+        return (press - INIT);
+    }
+    void binarysearch(double start, double end)
+    {
+        printf("search[%f,%f]\t",start,end);
+        if (end - start < Precision)
+        {
+                printf("found the solution : %f",end);
+            return;
+        }
+        omege = start + (end - start)/2;
+        double mid = p();
+        printf("mid p=%f\n",mid);
+        if(mid - DIF > 0){
+            binarysearch(start, start + (end - start)/2);
+        }
+        else
+        {
+            binarysearch(start + (end - start)/2, end);
+        }
+    }
+    int main()
+    {
         
+        // freopen("dataof1.out","w",stdout);
+        // printf("%f",(GAP*E(102)/V)*( - Qout(57,102)) );
+        binarysearch(0.03,0.1);
+    
+        return 0;
+    }
+    \end{lstlisting}
+    \subsection{\LaTeX 代码}
+    本文用\LaTeX 排版，\LaTeX 代码置于支持文件中。
+
 \end{document}
