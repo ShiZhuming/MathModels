@@ -8,7 +8,9 @@
 #define Phigh 160
 #define Precision 0.001
 #define DIF 0
+double omege = 20;
 // #define INF 
+/*//this part for question 1
 double T = 0.3;
 double A(double t)
 {
@@ -37,6 +39,39 @@ double Qout(double t)
     else return 0;
 }
 double p()
+{
+    double t = 0;
+    double press = INIT;
+    // printf("%f\n%f\n",t,press);
+    while (t < TimeLimit)
+    {
+        // printf("press=%f\t",press);
+        if(press > Phigh)press = Phigh;
+        press = press + ((C*A(t)*sqrt(2*(Phigh-press)/0.87113)-Qout(t))/V)*GAP*(0.0001*press*press*press-0.001082*press*press+5.474*press+1532);
+        t += GAP;
+        // printf("%f\n%f\n",t,press);
+    }
+    return (press - INIT);
+}
+*/
+inline int delta(double ph, double p)
+{
+    return (ph >= p);
+}
+inline double Theta(double t)
+{
+    return (omege*r+3.14-6.28*(int)((omege*t+3.14)/6.28));
+}
+inline double R(double theta)
+{
+    return (4.826+2.413*sin(theta+1.5708));
+}
+double Vh(double t)
+{
+    return (20+(7.239-R(Theta(t)))*3.1416*2.5*2.5);
+}
+
+double p()//for question 2
 {
     double t = 0;
     double press = INIT;
