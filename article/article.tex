@@ -213,7 +213,7 @@
     联立方程\ref{maineq2}、\ref{highmaineq2}并使用和问题1中相似的差分方程计算
     \begin{equation}
         \begin{aligned}
-            &\frac{p_{h\ i+1}-p_{h\ i}}{E(p_{h\ i})\Delta t}=\frac{1}{V_h(t_i)}\left(-\delta CA\sqrt{\frac{2\left(p_h-p_i\right)}{\rho_h}}-\frac{\dif V_h}{\dif t}\right)\\
+            &\frac{p_{h\ i+1}-p_{h\ i}}{E(p_{h\ i})\Delta t}=\frac{1}{V_h(t_i)}\left(-\delta CA\sqrt{\frac{2\left(p_h-p_i\right)}{\rho_h}}\frac{\rho}{\rho_h}-\frac{\dif V_h}{\dif t}\right)\\
             &\frac{p_{i+1}-p_i}{E(p_i)\Delta t}=\frac{1}{V_0}\left(\delta CA\sqrt{\frac{2\left(p_h-p_i\right)}{\rho_h}}-Q_{out}(t_i)\right)\\
             &p_h(\frac{2k\pi}{\omega})=0.5,k\in\mathbb{N}
         \end{aligned}
