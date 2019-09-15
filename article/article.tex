@@ -323,7 +323,7 @@ showstringspaces=false
             0&p<p_0
         \end{cases}
     \end{equation}\par
-    由于减压阀的流量亦受到流量公式的限制，所以我们不妨设定$p_0=\SI{100}{\MPa}$，并在这一条件下用经过一段时间后的压力变化$\Delta p$来衡量“控制高压油管压力”的好坏，利用二分搜索使$\Delta p$最小的油泵转速$\omega$的值，数值模拟得到的图如下。
+    由于减压阀的流量亦受到流量公式的限制，所以我们不妨设定$p_0=\SI{100}{\MPa}$，并在这一条件下用经过足够长的时间后的压力变化$\Delta p$来衡量“控制高压油管压力”的好坏，利用二分搜索使$\Delta p$最小的油泵转速$\omega$的值，数值模拟得到的图如下。
     \begin{figure}[H]
         \centering
         \includegraphics[scale=0.32]{figure/3-5.png}
@@ -338,7 +338,7 @@ showstringspaces=false
     \section{总结}
     在本题中，我们从简单到复杂考虑了高压油路系统的三种模型，并把它们统一到
     \[\frac{\dif p}{E\dif t}=\frac{Q_{in}-Q_{out}}{V}\]
-    这一简洁的形式，利用具体条件下不同
+    这一简洁的形式，利用具体条件下不同$Q_{in}$和$Q_{out}$的形式代入方程，将微分方程离散化为差分方程，利用计算机模拟求解，将优化目标量化为$\Delta p$这样的函数，并用二分法高效取得我们需要优化的值。\par
 
     % appendix
     \newpage
