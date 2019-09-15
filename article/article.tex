@@ -171,7 +171,7 @@ showstringspaces=false
         \caption{相位差对$p-t$关系的影响}
         \label{11exxwc}
     \end{figure}
-    对于将油管内的压力从\SI{100}{\MPa}提高到\SI{150}{\MPa}的情况，我们可以用同样的差分方程，分别模拟起始压力与\SI{2}{\s}、\SI{5}{\s}和\SI{10}{\s}后的压力差别为\SI{50}{\MPa}时的情况，同样通过二分法可以找出最佳的精确到千分位的单向阀开启时长$T_{2s}=\SI{0.89}{\ms}$、$T_{5s}=\SI{0.71}{\ms}$和$T_{10s}=\SI{0.70}{\ms}$。\par
+    对于将油管内的压力从\SI{100}{\MPa}提高到\SI{150}{\MPa}的情况，我们可以用同样的差分方程，分别模拟起始压力与\SI{2}{\s}、\SI{5}{\s}和\SI{10}{\s}后的压力差别为\SI{50}{\MPa}时的情况，同样通过二分法可以找出最佳的精确到百分位的单向阀开启时长$T_{2s}=\SI{0.89}{\ms}$、$T_{5s}=\SI{0.71}{\ms}$和$T_{10s}=\SI{0.70}{\ms}$。\par
     \begin{figure}[H]
         \centering
         \includegraphics[scale=0.32]{figure/13-1-t.png}
@@ -185,7 +185,7 @@ showstringspaces=false
         \caption{相位差对调节过程的影响}
         \label{12exxwc}
     \end{figure}
-    而进过该段时间后，维持\SI{150}{\MPa}所需要的单向阀开启时长为$T_{150}=\SI{0.70}{\ms}$。图\ref{adjustpress}展示了其中一个调整过程中的压力对时间的变化图像。\par
+    而经过该段时间后，维持\SI{150}{\MPa}所需要的单向阀开启时长为$T_{150}=\SI{0.70}{\ms}$。图\ref{adjustpress}展示了其中一个调整过程中的压力对时间的变化图像。\par
     \paragraph{问题1结论}
     综上所述，将高压油管内的压力尽可能稳定在\SI{100}{\MPa}左右，应该设置单向阀每次开启\SI{0.29}{\ms}。如果要将高压油管内的压力从\SI{100}{\MPa}增加到\SI{150}{\MPa},且分别经过约\SI{2}{\s}、\SI{5}{\s}和\SI{10}{\s}的调整之后稳定在\SI{150}{\MPa}时的情况，对应时长内单向阀应分别先调整为开启$T_{2s}=\SI{0.89}{\ms}$、$T_{5s}=\SI{0.71}{\ms}$和$T_{10s}=\SI{0.70}{\ms}$，随后维持开启时长为$T_{150}=\SI{0.70}{\ms}$，以维持\SI{150}{\MPa}。\par
     
@@ -270,7 +270,7 @@ showstringspaces=false
             &p_h(\frac{2k\pi}{\omega})=0.5,k\in\mathbb{N}
         \end{aligned}
     \end{equation}\par
-    我们使用二分法对一定范围内的$\omega$进行搜索，用经过一定时间段后高压油管内油压力的变化$\Delta p$来评价“压力稳定在\SI{100}{\MPa}”的好坏，搜索出使压力变化最小时的$\omega=\SI{0.0152}{\radian\per\ms}$。对应的$p-t$变化曲线如图\ref{ptfigure2}。\par
+    我们使用二分法对一定范围内的$\omega$进行搜索，用经过一定时间段后高压油管内油压力的变化$\Delta p$来评价“压力稳定在\SI{100}{\MPa}”的好坏，搜索出使压力变化最小时的$\omega=\SI{0.027}{\radian\per\ms}$。对应的$p-t$变化曲线如图\ref{ptfigure2}。\par
     \begin{figure}[h]
         \centering
         \includegraphics[scale = 0.32]{figure/2-1.png}
@@ -285,7 +285,7 @@ showstringspaces=false
         % \label{}
     \end{figure}
     \paragraph{问题2结论}
-    通过数值模拟和二分搜索，我们给出凸轮的角速度$\omega=\SI{0.028}{\radian\per\ms}$时，高压油管内的压力尽量稳定在\SI{100}{\MPa}左右。
+    通过数值模拟和二分搜索，我们给出凸轮的角速度$\omega=\SI{0.027}{\radian\per\ms}$时，高压油管内的压力尽量稳定在\SI{100}{\MPa}左右。
     \section{问题3}
     从问题2给出的图\ref{ptfigure2}可以看到，造成压力波动的主要因素是喷油和注油过程。相比两个喷油嘴同时喷油，交替喷油可以减少高压油管中的压力波动。我们可以通过数值模拟验证这一点。\par
     增加一个喷油嘴只改变了问题2中$Q_{out}(t)$的具体形式，对于交替喷油模型，$Q_{out}(t)$的具体形式如下。\par
@@ -311,11 +311,32 @@ showstringspaces=false
         \caption{增加一个喷油嘴之后的高压油管内压力与时间变化}
         \label{ptfigure31}
     \end{figure}
-    减压阀可以控制体系内部压力不高于某一定值，该定值即为减压阀的开放阈值，记作$p_0$，通过设定$p_0$即可控制减压阀。
+    减压阀可以控制体系内部压力不高于某一定值，该定值即为减压阀的开放阈值，记作$p_0$，通过设定$p_0$即可控制减压阀，减压阀可以视为一个受压力控制的的喷油嘴，其对$Q_{out}(t)$的贡献为
+    \begin{equation}
+        Q_{out}(t)=\gamma CA\sqrt{\frac{2p}{\rho}}
+    \end{equation}
+    其中$0-1$变量$\gamma$定义如下
+    \begin{equation}
+        \gamma=
+        \begin{cases}
+            1&p\geq p_0\\
+            0&p<p_0
+        \end{cases}
+    \end{equation}\par
+    由于减压阀的流量亦受到流量公式的限制，所以我们不妨设定$p_0=\SI{100}{\MPa}$，并在这一条件下用经过一段时间后的压力变化$\Delta p$来衡量“控制高压油管压力”的好坏，利用二分搜索使$\Delta p$最小的油泵转速$\omega$的值，数值模拟得到的图如下。
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.32]{figure/3-5.png}
+        \caption{不同转速$\omega$对高压油管压力对时间关系的影响}
+        % \label{}
+    \end{figure}\par
+    数值模拟结果显示，当$\omega=\SI{0.505}{\radian\per\ms}$时，$\Delta p$值最小，且压力波动范围已经显著小于原先不加减压阀的情况，所以我们选择这种方案。
+    \paragraph{问题3结论}
+    在增加一个喷嘴的情况下，最佳方案是使两个喷嘴交替喷油，每次喷油时间间隔相等，此时油泵转速设定为\SI{0.053}{\radian\per\ms}。加入减压阀后，控制方案为设定减压阀的打开阈值为$p_0=\SI{100}{\MPa}$，此时油泵转速对应设定为\SI{0.505}{\radian\per\ms}。
 
-
+    
     \section{总结}
-    在本题中，我们从简单到复杂考虑了高压油路系统的三种模型，并把他们统一到
+    在本题中，我们从简单到复杂考虑了高压油路系统的三种模型，并把它们统一到
     \[\frac{\dif p}{E\dif t}=\frac{Q_{in}-Q_{out}}{V}\]
     这一简洁的形式，利用具体条件下不同
 
