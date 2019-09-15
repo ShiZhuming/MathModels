@@ -1,7 +1,7 @@
 #include<cstdio>
 #include<cmath>
 #define filename "data.out"
-#define TimeLimit 500
+#define TimeLimit 1000
 #define GAP 0.01
 #define INIT 100
 #define V (3.1416*500*25)
@@ -235,7 +235,7 @@ int main()
     freopen(filename,"w",stdout);
     // freopen("dataof1.out","w",stdout);
     // printf("%f",(GAP*E(102)/V)*( - Qout(57,102)) );
-    binarysearch(0.01,1);
+    binarysearch(0.01,0.03);
 
     return 0;
 }

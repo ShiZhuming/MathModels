@@ -1,7 +1,7 @@
 #include<cstdio>
 #include<cmath>
 #define filename "data.out"
-#define TimeLimit 500
+#define TimeLimit 1000
 #define GAP 0.01
 #define INIT 100
 #define V (3.1416*500*25)
@@ -12,52 +12,7 @@
 #define phinit 0.5
 #define startpaint 0
 #define dotsnum 1000
-double omege = 0.1,pj=150;
-// #define INF 
-/*//this part for question 1
-double T = 0.3;
-double A(double t)
-{
-    double temp = t-(double)((int)(t/(T+10)))*(T+10);
-    if(temp <= T){
-        return (0.49*3.1416);
-    }
-    else return 0;
-}
-double Qout(double t)
-{
-    double temp = t-(double)((int)(t/(100)))*(100);
-    // printf("%f",temp);
-    if(temp <= 0.2)
-    {
-        return 100*temp;
-    }
-    else if(temp >0.2 && temp < 2.2)
-    {
-        return 20;
-    }
-    else if(temp >= 2.2 && temp <= 2.4)
-    {
-        return temp*(-100)+240;
-    }
-    else return 0;
-}
-double p()
-{
-    double t = 0;
-    double press = INIT;
-    // printf("%f\n%f\n",t,press);
-    while (t < TimeLimit)
-    {
-        // printf("press=%f\t",press);
-        if(press > Phigh)press = Phigh;
-        press = press + ((C*A(t)*sqrt(2*(Phigh-press)/0.87113)-Qout(t))/V)*GAP*(0.0001*press*press*press-0.001082*press*press+5.474*press+1532);
-        t += GAP;
-        // printf("%f\n%f\n",t,press);
-    }
-    return (press - INIT);
-}
-*/
+double omege = 0.1,pj=100;
 double rho(double p){
     double sum=0;
     if(p>100){
@@ -96,7 +51,7 @@ double Vh(double t)
 }
 double h(double t)
 {
-    double temp = t - ((int)(t/50))*50;
+    double temp = t - ((int)(t/100))*100;
     if(temp < 0.3309)
     {
         return (0.5342*temp*temp-0.04835*temp+0.000726)/(temp*temp-0.7362*temp+0.1716);
@@ -122,6 +77,12 @@ double Qout(double t, double p)
 {
     return (0.85*B(t)*sqrt(2*p/rho(p)));
 }
+double Qj(double p){
+if(p>pj){
+    return (0.85*0.49*3.1416*sqrt(2*(p-0.5)/rho(p)));
+}
+return 0;
+}
 double p()//for question 2
 {
     double t = 0;
@@ -131,36 +92,36 @@ double p()//for question 2
     while (t < TimeLimit)
     {
         // printf("press=%f\t",press);
-        t += GAP;
-        if(omege*t/6.2832-(int)(omege*t/6.2832) < 0.001 && omege*t/6.2832-(int)(omege*t/6.2832) > -0.001)
+        if(omege*t/6.2832-(int)(omege*t/6.2832) < 0.0001 && omege*t/6.2832-(int)(omege*t/6.2832) > -0.0001)
         {
             pressh = phinit;
         }
-        // printf("Qout = %f\t",Qout(t,press));//喷油
         if(delta(pressh,press))
         {
             // printf("inittime = %f\tpressh = %f\tpress = %f\n",t,pressh,press);
-            pressh = pressh + (GAP*E(pressh)/Vh(t))*(-0.85*3.1416*0.49*sqrt(2*(pressh - press)/rho(pressh))*(rho(press)/rho(pressh)) - (Vh(t) - Vh(t - GAP))/GAP);
+            pressh = pressh + (GAP*E(pressh)/Vh(t))*(-0.85*3.1416*0.49*sqrt(2*(pressh - press)/rho(pressh))*(rho(press)/rho(pressh)) - (Vh(t+GAP) - Vh(t))/GAP);
             if(delta(pressh,press))
             {
-                press = press + (GAP*E(press)/V)*(0.85*3.1416*0.49*sqrt(2*(pressh - press)/rho(pressh)) - Qout(t,press));        
+                press = press + (GAP*E(press)/V)*(0.85*3.1416*0.49*sqrt(2*(pressh - press)/rho(pressh)) - Qout(t,press)-Qj(press));        
             }
             else
             {
-                press = press + (GAP*E(press)/V)*( - Qout(t,press));
+                press = press + (GAP*E(press)/V)*( - Qout(t,press)-Qj(press));
             }    
         }
         else
         {
-            pressh = pressh + (GAP*E(pressh)/Vh(t))*( - (Vh(t) - Vh(t - GAP))/GAP);
-            press = press + (GAP*E(press)/V)*( - Qout(t,press));
+            pressh = pressh + (GAP*E(pressh)/Vh(t))*( - (Vh(t+GAP) - Vh(t))/GAP);
+            press = press + (GAP*E(press)/V)*( - Qout(t,press)-Qj(press));
         }
+        t += GAP;
         // printf("time = %f\tpressh = %f\tpress = %f\n",t,pressh,press);
     }
     return (press - INIT);
 }
 double paintp()//for question 2
 {
+    double monitor=0;
     unsigned long long int longgap=(TimeLimit-startpaint)/GAP/dotsnum;
     unsigned long long int now=0;
     double t = 0;
@@ -170,30 +131,29 @@ double paintp()//for question 2
     while (t < TimeLimit)
     {
         // printf("press=%f\t",press);
-        t += GAP;
-        if(omege*t/6.2832-(int)(omege*t/6.2832) < 0.001 && omege*t/6.2832-(int)(omege*t/6.2832) > -0.001)
+        if(omege*t/6.2832-(int)(omege*t/6.2832) < 0.0001 && omege*t/6.2832-(int)(omege*t/6.2832) > -0.0001)
         {
             pressh = phinit;
         }
-        // printf("Qout = %f\t",Qout(t,press));//喷油
         if(delta(pressh,press))
         {
             // printf("inittime = %f\tpressh = %f\tpress = %f\n",t,pressh,press);
-            pressh = pressh + (GAP*E(pressh)/Vh(t))*(-0.85*3.1416*0.49*sqrt(2*(pressh - press)/rho(pressh))*(rho(press)/rho(pressh)) - (Vh(t) - Vh(t - GAP))/GAP);
+            pressh = pressh + (GAP*E(pressh)/Vh(t))*(-0.85*3.1416*0.49*sqrt(2*(pressh - press)/rho(pressh))*(rho(press)/rho(pressh)) - (Vh(t+GAP) - Vh(t))/GAP);
             if(delta(pressh,press))
             {
-                press = press + (GAP*E(press)/V)*(0.85*3.1416*0.49*sqrt(2*(pressh - press)/rho(pressh)) - Qout(t,press));        
+                press = press + (GAP*E(press)/V)*(0.85*3.1416*0.49*sqrt(2*(pressh - press)/rho(pressh)) - Qout(t,press)-Qj(press));        
             }
             else
             {
-                press = press + (GAP*E(press)/V)*( - Qout(t,press));
+                press = press + (GAP*E(press)/V)*( - Qout(t,press)-Qj(press));
             }    
         }
         else
         {
-            pressh = pressh + (GAP*E(pressh)/Vh(t))*( - (Vh(t) - Vh(t - GAP))/GAP);
-            press = press + (GAP*E(press)/V)*( - Qout(t,press));
+            pressh = pressh + (GAP*E(pressh)/Vh(t))*( - (Vh(t+GAP) - Vh(t))/GAP);
+            press = press + (GAP*E(press)/V)*( - Qout(t,press)-Qj(press));
         }
+        t += GAP;
         if(t>=startpaint){
         if(now==0){
         printf("%f %f\n",t,press);now=longgap;}
@@ -209,17 +169,19 @@ void binarysearch(double start, double end)
     //printf("search[%f,%f]\t",start,end);
     if (end - start < Precision)
     {
+        //printf("found the solution : %f",end);
         return;
     }
     omege = start + (end - start)/2;
-    double mid =0;
+    double mid = 0;
+    //printf("mid p=%f\n",mid);
     if(512*Precision<end - start&&end - start < Precision*1024)
     mid = paintp();
     else if(256*Precision<end - start&&end - start < Precision*512)
     mid = paintp();
     else if(128*Precision<end - start&&end - start < Precision*256)
     mid = paintp();
-    else if(end - start < Precision*2)
+    if(end - start < Precision*2)
     mid = paintp();
     else mid = p();
     if(mid - DIF > 0){
@@ -233,9 +195,7 @@ void binarysearch(double start, double end)
 int main()
 {
     freopen(filename,"w",stdout);
-    // freopen("dataof1.out","w",stdout);
-    // printf("%f",(GAP*E(102)/V)*( - Qout(57,102)) );
-    binarysearch(0.01,1);
+    binarysearch(0.001,1);
 
     return 0;
 }
