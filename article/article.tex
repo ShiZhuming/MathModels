@@ -65,7 +65,7 @@ showstringspaces=false
         p=p(t)
     \end{equation}
     \par
-    由条件可见，高压油管的内部体$V$不变，由$\rho=\frac{m}{V}$可见，对高压油管内燃油密度造成影响的仅有高压油管内的燃油质量，用微分方程来表达就是
+    由条件可见，高压油管的内部体积$V$不变，由$\rho=\frac{m}{V}$可见，对高压油管内燃油密度造成影响的仅有高压油管内的燃油质量，用微分方程来表达就是
     \begin{equation}
         \dif\rho=\dif\left(\frac{m}{V}\right)=\frac{\dif m}{V}
         \label{eq1}
@@ -233,7 +233,7 @@ showstringspaces=false
     \begin{equation}
         V_h(t)=20+(R_{up}-R(\theta(t)))\pi\left(\frac{5}{2}\right)^2
     \end{equation}
-    其中$R_{up}$为凸轮位于上止点时的极径，由题目给出，为\SI{0.5}{\MPa}，$R(\theta)$的表达式由题目附件1给出，$\theta(t)$的表达式如下，为了计算方便，我们把时刻$t=0$的相位设置为下止点，也就是$\theta = \pi$。
+    其中$R_{up}$为凸轮位于上止点时的极径，由题目给出，此时缸内压力为\SI{0.5}{\MPa}，$R(\theta)$的表达式由题目附件1给出，$\theta(t)$的表达式如下，为了计算方便，我们把时刻$t=0$的相位设置为下止点，也就是$\theta = \pi$。
     \begin{equation}
         \theta(t)=\omega t+\pi -2k\pi,k\in\mathbb{N},\theta(t)\geq0
     \end{equation}
@@ -307,7 +307,7 @@ showstringspaces=false
     将这个结果代回方程\ref{maineq2}就可以进行与问题1相同的数值模拟，解出此时最合适的凸轮角速度为$\omega=\SI{0.053}{\radian\per\ms}$。图\ref{ptfigure31}中的红色线描述了此时的$p-t$变化情况，其他色线描述了二分逼近的结果。\par
     \begin{figure}[H]
         \centering
-        \includegraphics[scale=0.32]{figure/3-3.png}
+        \includegraphics[scale=0.32]{figure/3-4.png}
         \caption{增加一个喷油嘴之后的高压油管内压力与时间变化}
         \label{ptfigure31}
     \end{figure}
