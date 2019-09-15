@@ -1,7 +1,7 @@
 #include<cstdio>
 #include<cmath>
 #define TimeLimit 1000
-#define GAP 0.001
+#define GAP 0.01
 #define INIT 100
 #define V (3.1416*500*25)
 #define C 0.85
@@ -94,15 +94,15 @@ double Vh(double t)
 double h(double t)
 {
     double temp = t - ((int)(t/100))*100;
-    if(t < 0.3309)
+    if(temp < 0.3309)
     {
         return (0.5342*temp*temp-0.04835*temp+0.000726)/(temp*temp-0.7362*temp+0.1716);
     }
-    else if(t >= 0.3309 && t <= 2.1213)
+    else if(temp >= 0.3309 && temp <= 2.1213)
     {
         return 1.1532;
     }
-    else if(t > 2.1213 && t < 2.45)
+    else if(temp > 2.1213 && temp < 2.45)
     {
         return (0.5358*temp*temp-2.576*temp+3.096)/(temp*temp-4.163*temp+4.368);
     }
@@ -129,10 +129,11 @@ double p()//for question 2
     {
         // printf("press=%f\t",press);
         t += GAP;
-        if(omege*t/6.2832-(int)(omege*t/6.2832) < 0.00001 && omege*t/6.2832-(int)(omege*t/6.2832) > -0.00001)
+        if(omege*t/6.2832-(int)(omege*t/6.2832) < 0.001 && omege*t/6.2832-(int)(omege*t/6.2832) > -0.001)
         {
             pressh = phinit;
         }
+        // printf("Qout = %f\t",Qout(t,press));//喷油
         if(delta(pressh,press))
         {
             // printf("inittime = %f\tpressh = %f\tpress = %f\n",t,pressh,press);
@@ -179,7 +180,7 @@ int main()
     
     // freopen("dataof1.out","w",stdout);
     // printf("%f",(GAP*E(102)/V)*( - Qout(57,102)) );
-    binarysearch(0.001,0.1);
+    binarysearch(0.01,0.03);
 
     return 0;
 }
