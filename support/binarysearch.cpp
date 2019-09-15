@@ -93,7 +93,7 @@ double Vh(double t)
 }
 double h(double t)
 {
-    double temp = t - ((int)(t/100))*100;
+    double temp = t - ((int)(t/50))*50;
     if(temp < 0.3309)
     {
         return (0.5342*temp*temp-0.04835*temp+0.000726)/(temp*temp-0.7362*temp+0.1716);
@@ -180,7 +180,7 @@ int main()
     
     // freopen("dataof1.out","w",stdout);
     // printf("%f",(GAP*E(102)/V)*( - Qout(57,102)) );
-    binarysearch(0.01,0.03);
+    binarysearch(0.03,0.1);
 
     return 0;
 }
