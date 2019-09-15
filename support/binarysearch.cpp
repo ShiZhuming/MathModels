@@ -1,13 +1,14 @@
 #include<cstdio>
 #include<cmath>
 #define TimeLimit 1000
-#define GAP 0.0001
-#define INIT 150
+#define GAP 0.001
+#define INIT 100
 #define V (3.1416*500*25)
 #define C 0.85
 #define Phigh 160
 #define Precision 0.001
 #define DIF 0
+#define phinit 0.5
 double omege = 20;
 // #define INF 
 /*//this part for question 1
@@ -54,13 +55,33 @@ double p()
     return (press - INIT);
 }
 */
+double rho(double p){
+    double sum=0;
+    if(p>100){
+        for(double i=100;i<=p;i+=0.001){
+            sum+=0.001/(0.0001*i*i*i-0.001082*i*i+5.474*i+1532);
+        }
+        return 0.85*pow(2.718281828459,sum);
+    }
+    else if(p<100){
+        for(double i=100;i>=p;i-=0.001){
+            sum-=0.001/(0.0001*i*i*i-0.001082*i*i+5.474*i+1532);
+        }
+        return 0.85*pow(2.718281828459,sum);
+    }
+    return 0.85;
+}
+inline double E(double p)
+{
+    return (0.0001*p*p*p-0.001082*p*p+5.474*p+1532);
+}
 inline int delta(double ph, double p)
 {
     return (ph >= p);
 }
 inline double Theta(double t)
 {
-    return (omege*r+3.14-6.28*(int)((omege*t+3.14)/6.28));
+    return (omege*t+3.14-6.28*(int)((omege*t+3.14)/6.28));
 }
 inline double R(double theta)
 {
@@ -70,19 +91,67 @@ double Vh(double t)
 {
     return (20+(7.239-R(Theta(t)))*3.1416*2.5*2.5);
 }
-
+double h(double t)
+{
+    double temp = t - ((int)(t/100))*100;
+    if(t < 0.3309)
+    {
+        return (0.5342*temp*temp-0.04835*temp+0.000726)/(temp*temp-0.7362*temp+0.1716);
+    }
+    else if(t >= 0.3309 && t <= 2.1213)
+    {
+        return 1.1532;
+    }
+    else if(t > 2.1213 && t < 2.45)
+    {
+        return (0.5358*temp*temp-2.576*temp+3.096)/(temp*temp-4.163*temp+4.368);
+    }
+    else
+    {
+        return 0;
+    }
+}
+double B(double t)
+{
+    return 3.1416*((1.25+h(t)*0.1584)*(1.25+h(t)*0.1584)-1.25*1.25);
+}
+double Qout(double t, double p)
+{
+    return (0.85*B(t)*sqrt(2*p/rho(p)));
+}
 double p()//for question 2
 {
     double t = 0;
     double press = INIT;
+    double pressh = phinit;
     // printf("%f\n%f\n",t,press);
     while (t < TimeLimit)
     {
         // printf("press=%f\t",press);
-        if(press > Phigh)press = Phigh;
-        press = press + ((C*A(t)*sqrt(2*(Phigh-press)/0.87113)-Qout(t))/V)*GAP*(0.0001*press*press*press-0.001082*press*press+5.474*press+1532);
         t += GAP;
-        // printf("%f\n%f\n",t,press);
+        if(omege*t/6.2832-(int)(omege*t/6.2832) < 0.00001 && omege*t/6.2832-(int)(omege*t/6.2832) > -0.00001)
+        {
+            pressh = phinit;
+        }
+        if(delta(pressh,press))
+        {
+            // printf("inittime = %f\tpressh = %f\tpress = %f\n",t,pressh,press);
+            pressh = pressh + (GAP*E(pressh)/Vh(t))*(-0.85*3.1416*0.49*sqrt(2*(pressh - press)/rho(pressh))*(rho(press)/rho(pressh)) - (Vh(t) - Vh(t - GAP))/GAP);
+            if(delta(pressh,press))
+            {
+                press = press + (GAP*E(press)/V)*(0.85*3.1416*0.49*sqrt(2*(pressh - press)/rho(pressh)) - Qout(t,press));        
+            }
+            else
+            {
+                press = press + (GAP*E(press)/V)*( - Qout(t,press));
+            }    
+        }
+        else
+        {
+            pressh = pressh + (GAP*E(pressh)/Vh(t))*( - (Vh(t) - Vh(t - GAP))/GAP);
+            press = press + (GAP*E(press)/V)*( - Qout(t,press));
+        }
+        // printf("time = %f\tpressh = %f\tpress = %f\n",t,pressh,press);
     }
     return (press - INIT);
 }
@@ -94,7 +163,7 @@ void binarysearch(double start, double end)
          printf("found the solution : %f",end);
         return;
     }
-    T = start + (end - start)/2;
+    omege = start + (end - start)/2;
     double mid = p();
     printf("mid p=%f\n",mid);
     if(mid - DIF > 0){
@@ -109,7 +178,8 @@ int main()
 {
     
     // freopen("dataof1.out","w",stdout);
-    // printf("%f",Qout(63));
-    binarysearch(0.3,1);
+    // printf("%f",(GAP*E(102)/V)*( - Qout(57,102)) );
+    binarysearch(0.001,0.1);
+
     return 0;
 }
